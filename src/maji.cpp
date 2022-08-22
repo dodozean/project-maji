@@ -2,11 +2,16 @@
 
 using namespace std;
 
+bool tile_compare_function(Tile tile_1, Tile tile_2);
+bool tile_compare(Tile tile_1, Tile tile_2);
 vector<string> string_divide(string input_line);
 bool check_length_valid(vector<string> maj_string);
 vector<Tile> tile_judge(vector<string> maj_string, bool *valid_flag);
 Tile tile_judge_num(string str, bool *valid_flag);
 Tile tile_judge_word(string str, bool *valid_flag);
+void show_tiles(vector<Tile> tiles);
+bool check_win(vector<Tile> tiles);
+bool check_DDH(vector<Tile> tiles);
 
 int main()
 {
@@ -15,6 +20,8 @@ int main()
     vector<Tile> tiles;
     bool valid_flag;
     bool *flag = 0;
+    bool if_win;
+    cout << "Welcome to the maj-winning judgement system! Please input the tiles and press enter according to the rules!" << endl;
     while (1)
     {
         getline(cin, input_line);
@@ -34,11 +41,61 @@ int main()
             }
             else
             {
-                cout << "continue!" << endl;
+                //show_tiles(tiles);
+                sort(tiles.begin(), tiles.end(), tile_compare_function);
+                //show_tiles(tiles);
+                if(check_win(tiles)==true)
+                {
+                    cout << "You have won the game!" << endl;
+                }
+                else
+                {
+                    cout << "You haven't won the game yet!" << endl;
+                }
             }
         }
     }
     return 0;
+}
+
+bool tile_compare_function(Tile tile_1, Tile tile_2)
+{
+    if (tile_1.type < tile_2.type)
+    {
+        return true;
+    }
+    else if (tile_1.type > tile_2.type)
+    {
+        return false;
+    }
+    else if (tile_1.type == tile_2.type)
+    {
+        if (tile_1.value < tile_2.value)
+        {
+            return true;
+        }
+        else if (tile_1.value > tile_2.value)
+        {
+            return false;
+        }
+        else if (tile_1.value == tile_2.value)
+        {
+            return true;
+        }
+    }
+    return true;
+}
+
+bool tile_compare(Tile tile_1, Tile tile_2)
+{
+    if (tile_1.value == tile_2.value && tile_1.type == tile_2.type)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 vector<string> string_divide(string input_line)
@@ -49,7 +106,7 @@ vector<string> string_divide(string input_line)
     while (sstream >> str)
     {
         maj_string.push_back(str);
-        //cout << str << endl;
+        // cout << str << endl;
     }
     return maj_string;
 }
@@ -118,7 +175,7 @@ Tile tile_judge_num(string str, bool *valid_flag)
         *valid_flag = false;
         return tile;
     }
-    //cout << tile.value << tile.type << endl;
+    // cout << tile.value << tile.type << endl;
     return tile;
 }
 
@@ -160,6 +217,40 @@ Tile tile_judge_word(string str, bool *valid_flag)
         *valid_flag = false;
         return tile;
     }
-    //cout << tile.value << tile.type << endl;
+    // cout << tile.value << tile.type << endl;
     return tile;
+}
+
+void show_tiles(vector<Tile> tiles)
+{
+    vector<Tile>::iterator iter;
+    for (iter = tiles.begin(); iter != tiles.end(); iter++)
+    {
+        cout << iter->value << " " << iter->type << endl;
+    }
+}
+
+bool check_win(vector<Tile> tiles)
+{
+    if (check_DDH(tiles) == true)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool check_DDH(vector<Tile> tiles)
+{
+    vector<Tile>::iterator iter;
+    for (iter = tiles.begin(); iter != tiles.end(); iter += 2)
+    {
+        if (tile_compare(*iter, *(iter + 1)) == false)
+        {
+            return false;
+        }
+    }
+    return true;
 }
