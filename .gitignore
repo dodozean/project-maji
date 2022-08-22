@@ -17,6 +17,8 @@ minted-*
 *.lmk
 .czrc
 .tag*
+.exe
+test_case/
 elm-stuff/
 scripts/grouping.csv
 .vscode/
